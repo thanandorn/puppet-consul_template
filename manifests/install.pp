@@ -2,22 +2,19 @@
 #
 class consul_template::install {
 
-  if $consul_template::data_dir {
-    file { $consul_template::data_dir:
-      ensure => 'directory',
-      owner  => $consul_template::user,
-      group  => $consul_template::group,
-      mode   => '0755',
-    }
-  }
-
   if $consul_template::install_method == 'url' {
+
+    if $consul_template::download_url == '' {
+      $download_url = "https://github.com/hashicorp/consul-template/releases/download/v${consul_template::version}/consul-template_${consul_template::version}_${consul_template::os}_${consul_template::arch}.tar.gz"
+    } else {
+      $download_url = $consul_template::download_url
+    }
 
     if $::operatingsystem != 'darwin' {
       ensure_packages(['tar'])
     }
     staging::file { 'consul-template.tar.gz':
-      source => $consul_template::download_url
+      source => $download_url
     } ->
     staging::extract { 'consul-template.tar.gz':
       target  => $consul_template::bin_dir,
