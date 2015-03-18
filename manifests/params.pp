@@ -25,14 +25,14 @@ class consul_template::params {
       default          => undef
     },
     /CentOS|RedHat/    => $::operatingsystemmajrelease ? {
-      /(4|5|6)/        => 'sysv',
+      /(4|5|6)/        => 'init',
       default          => 'systemd',
     },
     'Fedora'           => $::operatingsystemmajrelease ? {
-      /(12|13|14)/     => 'sysv',
+      /(12|13|14)/     => 'init',
       default          => 'systemd',
     },
     'Debian'           => 'debian',
-    default            => 'sysv'
+    default            => 'init'
   }
 }

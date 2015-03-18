@@ -63,7 +63,7 @@ class consul_template::install {
           content => template('consul_template/consul-template.systemd.erb'),
         }
       }
-      'sysv' : {
+      'init' : {
         file { '/etc/init.d/consul-template':
           mode    => '0555',
           owner   => 'root',
@@ -77,14 +77,6 @@ class consul_template::install {
           owner   => 'root',
           group   => 'root',
           content => template('consul_template/consul-template.debian.erb')
-        }
-      }
-      'sles' : {
-        file { '/etc/init.d/consul-template':
-          mode    => '0555',
-          owner   => 'root',
-          group   => 'root',
-          content => template('consul_template/consul-template.sles.erb')
         }
       }
       default : {
