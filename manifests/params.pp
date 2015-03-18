@@ -8,7 +8,7 @@ class consul_template::params {
   $install_method    = 'url'
   $package_name      = 'consul-template'
   $package_ensure    = 'latest'
-  $version = '0.6.0'
+  $version           = '0.6.0'
 
   case $::architecture {
     'x86_64', 'amd64': { $arch = 'amd64' }
@@ -19,20 +19,20 @@ class consul_template::params {
   $os = downcase($::kernel)
 
   $init_style = $::operatingsystem ? {
-    'Ubuntu'             => $::lsbdistrelease ? {
+    'Ubuntu'           => $::lsbdistrelease ? {
       '8.04'           => 'debian',
       /(10|12|14)\.04/ => 'upstart',
-      default => undef
+      default          => undef
     },
-    /CentOS|RedHat/      => $::operatingsystemmajrelease ? {
-      /(4|5|6)/ => 'sysv',
-      default   => 'systemd',
+    /CentOS|RedHat/    => $::operatingsystemmajrelease ? {
+      /(4|5|6)/        => 'sysv',
+      default          => 'systemd',
     },
-    'Fedora'             => $::operatingsystemmajrelease ? {
-      /(12|13|14)/ => 'sysv',
-      default      => 'systemd',
+    'Fedora'           => $::operatingsystemmajrelease ? {
+      /(12|13|14)/     => 'sysv',
+      default          => 'systemd',
     },
-    'Debian'             => 'debian',
-    default => 'sysv'
+    'Debian'           => 'debian',
+    default            => 'sysv'
   }
 }

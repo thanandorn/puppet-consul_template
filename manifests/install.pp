@@ -97,13 +97,17 @@ class consul_template::install {
   }
 
   if $consul_template::manage_user {
-    user { $consul_template::user:
-      ensure => 'present',
+    if ! defined(User[$consul_template::user]) {
+      group { $consul_template::user:
+        ensure => 'present',
+      }
     }
   }
   if $consul_template::manage_group {
-    group { $consul_template::group:
-      ensure => 'present',
+    if ! defined(Group[$consul_template::group]) {
+      group { $consul_template::group:
+        ensure => 'present',
+      }
     }
   }
 }

@@ -14,14 +14,33 @@
 
 CONSUL=<%= scope.lookupvar('consul_template::bin_dir') %>/consul-template
 CONFIG=<%= scope.lookupvar('consul_template::config_dir') %>
-PID_FILE=/var/run/consul-template/pidfile
+PID_FILE=/var/run/consul-template/consul-template.pid
 LOG_FILE=/var/log/consul-template
 
 [ -e /etc/sysconfig/consul-template ] && . /etc/sysconfig/consul-template
 
+mkrundir() {
+        [ ! -d /var/run/consul-template ] && mkdir -p /var/run/consul-template
+        chown <%= scope.lookupvar('consul_template::user') %> /var/run/consul-template
+}
+
+KILLPROC_OPT="-p ${PID_FILE}"
+mkpidfile() {
+        # Create PID file if it didn't exist
+        mkrundir
+        [ ! -f $PID_FILE ] && pidofproc $CONSUL > $PID_FILE
+        chown <%= scope.lookupvar('consul_template::user') %> /var/run/consul-template
+        if [ $? -ne 0 ] ; then
+            rm $PID_FILE
+            KILLPROC_OPT=""
+        fi
+}
+
 start() {
         echo -n "Starting consul-template: "
-        daemon \
+        mkrundir
+        [ -f $PID_FILE ] && rm $PID_FILE
+        daemon --user=<%= scope.lookupvar('consul_template::user') %> \
             --pidfile="$PID_FILE" \
             "$CONSUL" -config "$CONFIG"/config.json <%= scope.lookupvar('consul_template::extra_options') %> >> "$LOG_FILE" &
         retcode=$?
@@ -31,10 +50,11 @@ start() {
 
 stop() {
         echo -n "Shutting down consul-template: "
-        "$CONSUL" leave
+        mkpidfile
+        killproc $KILLPROC_OPT $CONSUL -9
 
         retcode=$?
-        rm -f /var/lock/subsys/consul-template
+        rm -f /var/lock/subsys/consul-template $PID_FILE
         return $retcode
 }
 
@@ -51,7 +71,7 @@ status() {
         fi
     else
         echo -n "Process not running."
-        return 1
+        return 3
     fi
 }
 

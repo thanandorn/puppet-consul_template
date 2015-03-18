@@ -27,6 +27,10 @@
 
 class consul_template (
   $purge_config_dir  = true,
+  $manage_user       = true,
+  $user              = 'consul',
+  $manage_group      = true,
+  $group             = 'consul',
   $bin_dir           = '/usr/local/bin',
   $arch              = $consul_template::params::arch,
   $version           = $consul_template::params::version,
