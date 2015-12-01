@@ -20,7 +20,7 @@
 set to 'package', its installed using the system package manager.
 - `os` **Default**: Read from facter.
 - `download_url` **Default**: undef. URL to download consul-template from (when `install_method` is set to 'url')
-- `download_url_base ` **Default**: https://github.com/hashicorp/consul-template/releases/download/ Base URL to download consul-template from (when `install_method` is set to 'url')
+- `download_url_base ` **Default**: https://releases.hashicorp.com/consul-template Base URL to download consul-template from (when `install_method` is set to 'url')
 - `download_extension` **Default**: zip. File extension of consul-template binary to be downloaded (when `install_method` is set to 'url')
 - `package_name` **Default**: consul-template. Name of package to install
 - `package_ensure` **Default**: latest.
